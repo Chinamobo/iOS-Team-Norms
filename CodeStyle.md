@@ -147,19 +147,19 @@ APIURL | 接口地址
 ### <a name='naming-match-case'></a>大小写
 * 类名采用大驼峰（`FooBar`）
 * 类成员、方法小驼峰（`fooBar`）
-* 局部变量大小写首选小驼峰，也可使用小写下划线的形式（`foo_bar`）接受
+* 局部变量大小写首选小驼峰，也可使用小写下划线的形式（`foo_bar`）
 * C函数的命名用大驼峰
 
 ### <a name='abbreviation'/></a>缩写
-可以使用广泛使用的缩写，如`URL`、`JSON`。但像将`download`简写为`dl`这种是不可以的。
+可以使用广泛使用的缩写，如 `URL`、`JSON`，并且缩写要大写。但像将`download`简写为`dl`这种是不可以的。
 
 
 ```Objective-C
 // OK
-ID, URL, JSON
+ID, URL, JSON, WWW
 
 // 糟糕
-id, Url, json
+id, Url, json, www
 
 destinationSelection       // OK
 destSel                    // 糟糕
@@ -314,7 +314,7 @@ if (a < b) {
 > 
 > 直接访问 iVar 的 block 会 retain iVar 所属的对象，这点很容易被忽略
 >
-> 
+> 定义和使用 iVar 都会产生编译警告，只不过默认设置没启用这两个警告
 
 ## <a name='constant'></a>常量
 除非调试用的、控制不同编译模式行为的常量可用宏外，其他常量不得用宏定义。
@@ -356,4 +356,4 @@ ushort APIFetchPageSizeDefault = 10;
 
 <a name='footnote'></a>
 [^1]: [再谈ARC - 苹果核](http://pingguohe.net/2012/06/22/talk_arc_again/)
-[^2]: http://bigwhite.blogbus.com/logs/125602412.html
+[^2]: [只对代码无法表达的东西写注释 - Tony Bai](http://bigwhite.blogbus.com/logs/125602412.html)
