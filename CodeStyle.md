@@ -93,13 +93,13 @@ remove:                  // 糟糕，什么被移除了？
 ```
 
 ### <a name='naming-protocol'></a>协议名
-好的协议名能立刻让人分辨出这不是一个类名，除了以常用的 delegate、dateSource 做结尾外，还可以使用 …ing 这种形式，如：`NSCoding`、`NSCopying`、`NSLocking`。
+好的协议名应能立刻让人分辨出这不是一个类名，除了以常用的 delegate、dateSource 做结尾外，还可以使用 …ing 这种形式，如：`NSCoding`、`NSCopying`、`NSLocking`。
 
 
 ### <a name='naming-notifications'></a>通知命名
 基本命名格式是：`[与通知相关的类名] + [Did | Will] + [UniquePartOfName] + Notification`，例：
 
-```
+```Objective-C
 NSApplicationDidBecomeActiveNotification
 NSWindowDidMiniaturizeNotification
 NSTextViewDidChangeSelectionNotification
@@ -110,7 +110,7 @@ NSColorPanelColorDidChangeNotification
 * 临时变量可以写得很短，如 i、k、vc 这样；
 * 临时变量可以使用匈牙利前缀，但数据类型不可以作为前缀：
 
-```
+```C
 // OK
 wCell, vcMaster, vToolbar
 
@@ -154,7 +154,7 @@ APIURL | 接口地址
 可以使用广泛使用的缩写，如`URL`、`JSON`。但像将`download`简写为`dl`这种是不可以的。
 
 
-```
+```Objective-C
 // OK
 ID, URL, JSON
 
@@ -176,9 +176,9 @@ i，j专用于循环标号
 <a name='formatting'/></a>代码格式化
 -----
 ### <a name='spaces'></a>空格
-类方法声明在方法类型与返回类型之间要有空格
+类方法声明在方法类型与返回类型之间要有空格。
 
-```
+```Objective-C
 // 糟糕
 -(void)methodName:(NSString *)string;
 
@@ -186,7 +186,28 @@ i，j专用于循环标号
 - (void)methodName:(NSString *)string;
 ```
 
-条件判断的括号内不要有括号
+条件判断的括号内侧不应有空格。
+
+```C
+// 糟糕
+if ( a < b ) {
+    // something
+}
+
+// OK
+if (a < b) {
+    // something
+}
+```
+
+关系运算符（如 `>=`、`!=`）和逻辑运算符（如 `&&`、`||`）两边要有空格。
+
+```C
+// OK
+(someValue > 100)? YES : NO
+```
+
+二元算数运算符两侧是否加空格不确定，根据情况自己定。一元运算符与操作数之前没有空格。
 
 多个参数逗号后留一个空格（这也符合正常的西文语法）。
 
@@ -194,7 +215,7 @@ i，j专用于循环标号
 ### <a name='braces'></a>花括号
 方法的花括号推荐另起一行。方法内部需要写在一行。
 
-```
+```Objective-C
   - (void)methodName:(NSString *)string {
    ↑空格                              ↑空格，推荐花括号在一行
       if () {
@@ -230,7 +251,7 @@ i，j专用于循环标号
 
 尽早返回错误：
 
-```
+```Objective-C
 // 为了简化示例，没有错误处理，并使用了伪代码
 
 // 糟糕的例子
