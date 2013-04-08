@@ -4,63 +4,54 @@ Chinamobo Objective-C 编码规范
 <a name='TOC'/></a>目录
 ----
 * [命名](#naming)
+  * [基本原则](#naming-basic-principle)
+  * [命名空间](#namespace)
+  * [方法名](#naming-method)
+  * [协议名](#naming-protocol)
+  * [通知命名](#naming-notifications)
+  * [临时变量命名](#naming-temporary-variable)
+  * [常量命名](#naming-constant)
+  * [大小写](#naming-match-case)
   * [缩写](#abbreviation)
+  * [其他](#naming-others)
+* [代码格式化](#formatting)
+  * [空格](#spaces)
+  * [花括号](#braces)
+  * [折行](#line-wrap)
+* [代码组织](#code-organization)
+* [类](#class)
+* [注释](#comment)
+  * [块注释](#block-comment) 
 * [其他](#others)
+  * [异常](#exception)
+* [参考](#reference)
 
 <a name='naming'/></a>命名
 -----
-### <a name='abbreviation'/></a>缩写
-可以使用广泛使用的缩写，如`URL`、`JSON`。但像将`download`简写为`dl`这种是不可以的。
+### <a name='naming-basic-principle'></a>基本原则
 
-:o: OK
-```
-ID, URL, JSON
-```
+* 仿照 Cocoa 风格来，使用长命名风格
+* 变量命名推荐的命名语素顺序是：最开头是命名空间简写，然后越重要、区别度越大的语素越要往前放。经典的结构是：作用范围+限定修饰+类型。例：
 
-:x: 糟糕
-```
-id, Url, json
-```
+```C
+extern ushort APIDefaultPageSize;        // 还行，能明白意思了
+extern ushort APIDefaultFetchPageSize;   // 加上些限定更好一些
+extern ushort APIFetchPageSizeDefault;   // 再好些，把重要的往前放
 
-### <a name='match-case'></a>大小写
-* 类名采用大驼峰（`FooBar`）
-* 类成员、方法小驼峰（`fooBar`）
-* 局部变量大小写首选小驼峰，小写下划线的形式（`foo_bar`）也可接受，大驼峰或大写
-* C函数的命名用大驼峰
-
-### <a name='hungarian-prefix'></a>变量匈牙利前缀
-禁止使用标定为特定数据类型的匈牙利前缀。
-
-前缀 | 含义
------|-----
-MSG  | 通知常量
-ix   | 序号，起始为0
-in   | 序号（自然数范围），起始为1
-if   | 类型为浮点的“序号”
-x    | 坐标
-y    | 坐标
-w    | 宽度
-h    | 高度
-vc   | 视图控制器
-v    | 视图
-tmp  | 临时变量
-k    | 宏常量
-
-:o: OK
-```
-MSGFirstColumnWillShow, wCell
+YHToolbarComment    // 不推荐
+YHCommentToolbar    // OK，把类型（toolbar）置后
 ```
 
-:x: 糟糕
-```
-bool_switchState, floatBoxHeight
-```
+### <a name='namespace'></a>命名空间
+* 类名、protocols、C 函数、常量、结构体和枚举应带有命名空间前缀；
+* 类方法不要带前缀，结构体字段也不要带前缀
 
-### 方法名
+
+### <a name='naming-method'></a>方法名
 * 以 `alloc`、`copy`、`init`、`mutableCopy`、`new` 开头的方法要注意，它们会改变ARC的行为。[^1]
 * 以 `get`、`set` 开头的方法有特殊的意义，不要随意定义。
   1. set 是属性默认的设置方法，如果函数不是为了设置类成员，则不要用 `set` 开头，可用 `setup` 替代。
-  2. get 和属性方法无关，但在 Cocoa 中，其标准行为是通过传入的指针返回结果，而不是通过 return 来返回的（如果有返回通常返回的是操作结果）。欲获取变量，直接以变量名为名，如：`userInfomation`，而不是 `getUserInfomation`。
+  2. get 和属性方法无关，但在 Cocoa 中，其标准行为是通过引用传值，而不是直接返回结果的。欲获取变量，直接以变量名为名，如：`userInfomation`，而不是 `getUserInfomation`。
 
 例：
 
@@ -68,11 +59,18 @@ bool_switchState, floatBoxHeight
 // OK
 - (NSString *)name;
 
-// 糟糕
+// 糟糕，应用上面的写法
 - (NSString *)getName;
 
 // OK，但极少使用
 - (void)getName:(NSString **)buffer range:(NSRange)inRange;
+
+
+// OK
+- (NSSize)cellSize;
+
+// 糟糕，应用上面的写法
+- (NSSize)calcCellSize;
  
 
 // 对 controller 做一般设置，OK
@@ -85,41 +83,144 @@ bool_switchState, floatBoxHeight
 - (void)setController;
 ```
 
+```Objective-C
+// 来自官方文档
+insertObject:atIndex:    // OK
+insert:at:               // 不清晰，插入了什么？at 具体指哪里？
+removeObjectAtIndex:     // OK
+removeObject:            // OK
+remove:                  // 糟糕，什么被移除了？
+```
+
+### <a name='naming-protocol'></a>协议名
+好的协议名能立刻让人分辨出这不是一个类名，除了以常用的 delegate、dateSource 做结尾外，还可以使用 …ing 这种形式，如：`NSCoding`、`NSCopying`、`NSLocking`。
 
 
+### <a name='naming-notifications'></a>通知命名
+基本命名格式是：`[与通知相关的类名] + [Did | Will] + [UniquePartOfName] + Notification`，例：
 
-### <a name='others'/>其他
+```
+NSApplicationDidBecomeActiveNotification
+NSWindowDidMiniaturizeNotification
+NSTextViewDidChangeSelectionNotification
+NSColorPanelColorDidChangeNotification
+```
+
+### <a name='naming-temporary-variable'></a>临时变量命名
+* 临时变量可以写得很短，如 i、k、vc 这样；
+* 临时变量可以使用匈牙利前缀，但数据类型不可以作为前缀：
+
+```
+// OK
+wCell, vcMaster, vToolbar
+
+// 糟糕，数据类型作为前缀
+bool_switchState, floatBoxHeight
+```
+
+推荐的前缀：
+
+前缀 | 含义
+-----|-----
+ix   | 序号，起始为0
+in   | 序号（自然数范围），起始为1
+if   | 类型为浮点的“序号”
+x    | 坐标
+y    | 坐标
+w    | 宽度
+h    | 高度
+vc   | 视图控制器
+v    | 视图
+
+### <a name='naming-constant'></a>常量命名
+除以上规则约定外，其他常量约定了以下前缀：
+
+前缀   | 含义
+-------|-----
+k      | 宏常量
+CDEN   | Core Data entity name
+UDk    | User Default key
+APIURL | 接口地址
+
+另见：[常量管理](#constant)
+
+### <a name='naming-match-case'></a>大小写
+* 类名采用大驼峰（`FooBar`）
+* 类成员、方法小驼峰（`fooBar`）
+* 局部变量大小写首选小驼峰，也可使用小写下划线的形式（`foo_bar`）接受
+* C函数的命名用大驼峰
+
+### <a name='abbreviation'/></a>缩写
+可以使用广泛使用的缩写，如`URL`、`JSON`。但像将`download`简写为`dl`这种是不可以的。
+
+
+```
+// OK
+ID, URL, JSON
+
+// 糟糕
+id, Url, json
+
+destinationSelection       // OK
+destSel                    // 糟糕
+setBackgroundColor:        // OK
+setBkgdColor:              // 糟糕
+```
+
+
+### <a name='naming-others'></a>其他
 i，j专用于循环标号
 
+为私有方法命名不要直接以“_”开头，而应以“命名空间_”开头。
 
-代码格式化
+<a name='formatting'/></a>代码格式化
 -----
-### 空格/换行
+### <a name='spaces'></a>空格
+类方法声明在方法类型与返回类型之间要有空格
+
+```
+// 糟糕
+-(void)methodName:(NSString *)string;
+
+// OK
+- (void)methodName:(NSString *)string;
+```
+
+条件判断的括号内不要有括号
+
 多个参数逗号后留一个空格（这也符合正常的西文语法）。
 
-### 花括号
-方法的花括号可以另起一行或在一行，但在方法内部需要写在一行。
 
-    - (void)methodName:(NSString *)string {
-     ↑空格                          ↑空格，花括在一行或另起一行
-       if () {
-      空格↑  ↑空格，花括号不要另起一行
-       }
-       else {
-    要换行↑  ↑空格，花括号不要另起一行
-       }    
-    }
+### <a name='braces'></a>花括号
+方法的花括号推荐另起一行。方法内部需要写在一行。
 
-原因：Xcode默认的花括号位置是这样的：方法另起一行，用在方法内部的各种补全都是在一行的。
+```
+  - (void)methodName:(NSString *)string {
+   ↑空格                              ↑空格，推荐花括号在一行
+      if () {
+   空格↑  ↑空格，花括号不要另起一行
+      }
+      else {
+ 要换行↑ ↑空格，花括号不要另起一行
+      }    
+  }
+```
 
-另起一行的写法在折叠后非常难看，但还要兼顾Xcode默认的处理方式，所以不做强制要求。
+**动机**
+> Xcode 默认的花括号位置是这样的：方法内部的各种补全都是在同一行的；方法定义的比较混乱，默认模版另起一行，但从 Interface Builder 中连线生成的方法在同一行的。
+> 
+> 考虑到 Xcode 的默认行为，方法内部要另起一行，方法所在行不强制定死。另外，模版可以定制，而 IB 生成的代码不可定制，所以不另起一行的写法优先。
+>
+> 另起一行的写法在代码折叠后非常难看。
+> 
 
-### 折行
-与多数其他规范不同，我们不建议手动折行。
+### <a name='line-wrap'></a>折行
+与多数其他规范不同，不建议手动折行。
 
-通常不要手动折行，Xcode自动折行的效果还是不错的，而且手动折行在窗口宽度比较窄时可能非常难看。不过，列宽参考线还是推荐打开的（在Xcode首选项->Text Editing中可以找到，默认80），因为一行过长的话还是不利于阅读的。
+**动机**
+> 手动折行的效果严重宽度依赖于窗口宽度——窗口过宽浪费宝贵的屏幕空间，较窄时可能无法阅读。而且 Xcode 自动折行的效果还是不错的。
 
-代码组织
+<a name='code-organization'></a>代码组织
 ----
 * 函数长度（行数）不应超过2/3屏幕，禁止超过70行。
 : 例外：对于顺序执行的初始化函数，如果其中的过程没有提取为独立方法的必要，则不必限制长度。
@@ -127,79 +228,111 @@ i，j专用于循环标号
 * 不要按类别排序（如把IBAction放在一块），应按任务把相关的组合在一起
 * 禁止出现超过两层循环的代码，用函数或block替代。
 
-类
-----
-类的成员尽量声明为属性，这样可以带来最大的灵活性。
-
-### 属性的内存管理
-一般说来，IBOutlet属性用weak，block（block也是对象）用copy，NSString通常也是copy，标量用assign，delegate、datesource对象用weak。
-
-除非你明确要直接操作成员，尽量用点操作访问属性，而不要直接访问对象的成员（init方法除外）。
-
-为什么：
-
-我们使用属性的一个重要原因是编译器会自动根据我们设置内存关键字去管理内存，而使用成员不会有这些操作。
-
-假设有Person类，在其对象使会打印一条日志。self有一个aPerson的属性，试问：
+尽早返回错误：
 
 ```
-self.aPerson = [[Person alloc] init]; self.aPerson = [[Person alloc] init];
-```
+// 为了简化示例，没有错误处理，并使用了伪代码
 
-和
-
-```
-_aPerson = [[Person alloc] init]; _aPerson = [[Person alloc] init];
-```
-
-两段代码分别会打印多少次释放日志？你可以分别试试不同的关键字，多数是一样的，但不总是一样的，两者的行为是不一致的！
-
-对于对象，strong、weak、assign通常有一致的打印，但其行为真的一致么？
-
-面试时可能让你写过一个setName的方法，如果属性是retain的，可以这样写：
-
-```
- - (void)setName:(NSString *)aName {
-    if (_name != aName) {
-       if (_name != nil) {
-          [_name release];
-       }
-       _name = aName;
-       if (aName != nil) {
-          [aName retain];
-       }
+// 糟糕的例子
+- (Task *)creatTaskWithPath:(NSString *)path {
+    Task *aTask;
+    if ([path isURL]) {
+        if ([fileManager isWritableFileAtPath:path]) {
+            if (![taskManager hasTaskWithPath:path]) {
+                aTask = [[Task alloc] initWithPath:path];
+            }
+            else {
+                return nil;
+            }
+        }
+        else {
+            return nil;
+        }
     }
- }
+    else {
+        return nil;
+    }
+    return aTask;
+}
+
+// 改写的例子
+- (Task *)creatTaskWithPath:(NSString *)path {
+    if (![path isURL]) {
+        return nil;
+    }
+    
+    if (![fileManager isWritableFileAtPath:path]) {
+        return nil;
+    }
+    
+    if ([taskManager hasTaskWithPath:path]) {
+        return nil;
+    }
+    
+    Task *aTask = [[Task alloc] initWithPath:path];
+    return aTask;
+}
 ```
 
-如果是assign，可以简单的这样写：
+
+
+<a name='class'/></a>类
+----
+禁止在类的 interface 中定义任何 iVar 成员，只允许使用属性。
+
+尽量总是使用点操作符访问属性，而不是属性生成的 iVar 变量。以下情形除外：
+
+* 明确要避免修改产生 KVO 通知的；
+* 需重写属性 getter 或 setter 的；
+* 性能分析确定使用属性会导致性能不可接受的；
+* 多线程环境中，为防止互斥一次进行多个修改的；
+* init、dealloc 方法中。
+
+动机
+> 如果使用 iVar，很多情况要特殊处理，容易出错。总是使用成员，规则简单，不易出问题。
+> 
+> 直接访问 iVar 的 block 会 retain iVar 所属的对象，这点很容易被忽略
+>
+> 
+
+## <a name='constant'></a>常量
+除非调试用的、控制不同编译模式行为的常量可用宏外，其他常量不得用宏定义。
+
+常量定义示例：
 
 ```
- - (void)setName:(NSString *)aName {
-    _name = aName;
- }
+// 头文件
+extern ushort APIFetchPageSizeDefault;    // 无const，可在外部修改
+
+// 实现文件
+ushort APIFetchPageSizeDefault = 10;
 ```
 
-两者能一样么？（这个例子只是一个示例，正常情况，name属性应该是copy的）
+## <a name='comment'></a>注释
+尽量让代码可以自表述，而不是依赖注释。
 
-另一方面，自动合成的属性做的不仅仅是内存管理那么简单，直接访问成员可能不会触发key value observe（跟监听的option有关），而且触发次数也常常不一样。
+> 注释应该表达那些代码没有表达以及无法表达的东西。如果一段注释被用于解释一些本应该由这段代码自己表达的东西，我们就应该将这段注释看成一个改变代码结构或编码惯例直至代码可以自我表达的信号。我们重命名那些糟糕的方法和类名，而不是去修补。我们选择将长函数中的一些代码段抽取出来形成一些小函数，这些小函数的名字可以表述原代码段的意图，而不是对这些代码段进行注释。尽可能的通过代码进行表达。你通过代码所能表达的和你想要表达的所有事情之间的差额将为注释提供了一个合理的候选使用场合。对那些代码无法表达的东西进行注释，而不要仅简单地注释那些代码没有表达的东西。”[^2]
 
-## 注释
-方法内部禁止使用块注释。 
+### <a name='block-comment'></a>块注释
+方法内部禁止使用块注释。除非要临时注释大段代码，一般情况总应使用行注释。
 
-“注释应该表达那些代码没有表达以及无法表达的东西。如果一段注释被用于解释一些本应该由这段代码自己表达的东西，我们就应该将这段注释看成一个改变代码结构或编码惯例直至代码可以自我表达的信号。我们重命名那些糟糕的方法和类名，而不是去修补。我们选择将长函数中的一些代码段抽取出来形成一些小函数，这些小函数的名字可以表述原代码段的意图，而不是对这些代码段进行注释。尽可能的通过代码进行表达。你通过代码所能表达的和你想要表达的所有事情之间的差额将为注释提供了一个合理的候选使用场合。对那些代码无法表达的东西进行注释，而不要仅简单地注释那些代码没有表达的东西。”[http://bigwhite.blogbus.com/logs/125602412.html]
+**动机**
+> 因为块注释不能正确嵌套。
 
-### 异常
-* 作为被调用模块的维护者，当被调用不当时（参数有问题、不和时宜），如何处理需要考虑（抛出异常还是返回错误状态）
-* 不要依赖try catch，它不是代替你做检查、填补遗漏的工具
-
-### 其他
-#### 使用Unicode
-能用UTF-8就用UTF-8（无BOM的），让GBK这类编码见鬼去吧。不要写依赖ANSI编码格式的代码。
-
-参考
+<a name='others'></a>其他
 ------
-* http://developer.apple.com/library/ios/#documentation/Cocoa/Conceptual/CodingGuidelines/CodingGuidelines.html
-* 你们是如何为 View Controller 的变量命名的呢？http://www.v2ex.com/t/25732
 
+### <a name='exception'></a>异常
+* 作为被调用模块的维护者，当被调用不当时（参数有问题、不和时宜），如何处理需要考虑（抛出异常还是返回错误状态）；
+* 不要依赖 try catch，它不是代替你做检查、填补遗漏的工具。
+
+
+<a name='reference'></a>参考
+------
+* [Coding Guidelines for Cocoa](http://developer.apple.com/library/ios/#documentation/Cocoa/Conceptual/CodingGuidelines/CodingGuidelines.html)
+* [你们是如何为 View Controller 的变量命名的呢？ - V2EX](//www.v2ex.com/t/25732)
+* [代码大全(第2版) - 亚马逊](http://www.amazon.cn/dp/B0061XKRXA)
+
+<a name='footnote'></a>
 [^1]: [再谈ARC - 苹果核](http://pingguohe.net/2012/06/22/talk_arc_again/)
+[^2]: http://bigwhite.blogbus.com/logs/125602412.html
