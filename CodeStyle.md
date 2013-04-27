@@ -22,6 +22,7 @@ Chinamobo Objective-C 编码规范
   * [折行](#line-wrap)
 * [代码组织](#code-organization)
 * [类](#class)
+  * [Property attributes](#property-attributes)
 * [注释](#comment)
   * [块注释](#block-comment) 
 * [其他](#others)
@@ -301,7 +302,7 @@ if (a < b) {
 
 <a name='class'/></a>类
 ----
-禁止在类的 interface 中定义任何 iVar 成员，只允许使用属性。
+禁止在类的 interface 中定义任何 iVar 成员，只允许使用属性，但可以在特定情形中使用属性生成的 iVar。
 
 尽量总是使用点操作符访问属性，而不是属性生成的 iVar 变量。以下情形除外：
 
@@ -318,7 +319,17 @@ if (a < b) {
 >
 > 定义和使用 iVar 都会产生编译警告，只不过默认设置没启用这两个警告
 
-## <a name='constant'></a>常量
+### <a name='property-attributes'></a>Property attributes
+
+什么时候使用 copy？
+
+* block 属性要定义成 copy。
+* 当一个属性赋值后不期望改变时应当用 copy，最常见的类型如 NSString、NSURL。可变类型的成员，如 NSMutableArray、NSMutableDictionary 不能定成 copy 的。
+
+相关 Demo 可在 https://github.com/BB9z/PropertyTest 获得。
+
+<a name='constant'></a>常量
+----
 除非调试用的、控制不同编译模式行为的常量可用宏外，其他常量不得用宏定义。
 
 常量定义示例：
@@ -331,7 +342,8 @@ extern ushort APIFetchPageSizeDefault;    // 无const，可在外部修改
 ushort APIFetchPageSizeDefault = 10;
 ```
 
-## <a name='comment'></a>注释
+<a name='comment'></a>注释
+----
 尽量让代码可以自表述，而不是依赖注释。
 
 > 注释应该表达那些代码没有表达以及无法表达的东西。如果一段注释被用于解释一些本应该由这段代码自己表达的东西，我们就应该将这段注释看成一个改变代码结构或编码惯例直至代码可以自我表达的信号。我们重命名那些糟糕的方法和类名，而不是去修补。我们选择将长函数中的一些代码段抽取出来形成一些小函数，这些小函数的名字可以表述原代码段的意图，而不是对这些代码段进行注释。尽可能的通过代码进行表达。你通过代码所能表达的和你想要表达的所有事情之间的差额将为注释提供了一个合理的候选使用场合。对那些代码无法表达的东西进行注释，而不要仅简单地注释那些代码没有表达的东西。”[^2]
@@ -353,6 +365,8 @@ ushort APIFetchPageSizeDefault = 10;
 <a name='reference'></a>参考
 ------
 * [Coding Guidelines for Cocoa](http://developer.apple.com/library/ios/#documentation/Cocoa/Conceptual/CodingGuidelines/CodingGuidelines.html)
+* https://github.com/github/objective-c-conventions
+* https://github.com/jverkoey/iOS-Best-Practices
 * [你们是如何为 View Controller 的变量命名的呢？ - V2EX](//www.v2ex.com/t/25732)
 * [代码大全(第2版) - 亚马逊](http://www.amazon.cn/dp/B0061XKRXA)
 
