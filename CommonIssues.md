@@ -3,6 +3,10 @@
 常见问题强调
 ========
 
+201304
+-----
+* 建议将 Storyboard 中的视图都用 segue 连接起来，即使实际页面间切换没用 segue。这样做的目的是增加 scene 间的关联性，让人明确知道界面间的关系。只把相关 scene 放在一起而不连线又是会比较模糊。
+
 201303
 -----
 * 视图必须正确设置 `autoresizingMask`。
@@ -27,3 +31,23 @@ view.frame = CGRect(margin, margin, bounds.size.width - margin*2, bounds.size.he
 * 错误发生先看错误信息，错误是什么都没搞清就别问其他人了。
 
 * 如果一个任务你确定完不成了，赶快求助，别怕丢人。光憋在那里也提高不了，凭白浪费生命。没人笑话你（就算有那你也得给自己提高的机会吧）。
+
+之前一些问题强调
+----
+* 常量定义：const与指针
+
+```
+// 错误写法，指向常量的指针，BGBookTypeID 可以指向其他字符串
+NSString const *BGBookTypeID = @"something";
+
+// 与上面写法等价，但更明确
+const NSString *BGBookTypeID = @"something";
+
+// 正确的写法，指向不可改变的指针
+NSString *const BGBookTypeID = @"something";
+
+```
+
+* 在一个方法中要不要调用 super 方法是个问题，需要看文档。比如 `UIViewController` 的 `viewWillAppear:` 方法就有如下描述：
+
+  > If you override this method, you must call super at some point in your implementation.
