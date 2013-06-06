@@ -148,9 +148,9 @@ APIURL | 接口地址
 另见：[常量管理](#constant)
 
 ### <a name='naming-match-case'></a>大小写
-* 类名采用大驼峰（`FooBar`）
-* 类成员、方法小驼峰（`fooBar`）
-* 局部变量大小写首选小驼峰，也可使用小写下划线的形式（`foo_bar`）
+* 类名采用大驼峰（`UpperCamelCase`）
+* 类成员、方法小驼峰（`lowerCamelCase`）
+* 局部变量大小写首选小驼峰，也可使用小写下划线的形式（`snake_case`）
 * C函数的命名用大驼峰
 
 ### <a name='abbreviation'/></a>缩写
