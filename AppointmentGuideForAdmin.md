@@ -13,5 +13,4 @@
 ----
 1. 创建新 GitLab 用户，并将其加入到必要的项目中。
 2. [发送开发者邀请](https://developer.apple.com/membercenter/index.action#singleinvite)
-
-
+3. 发送 TeamCola 邀请
