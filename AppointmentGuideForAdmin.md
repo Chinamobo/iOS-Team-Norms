@@ -3,6 +3,8 @@
 新人入职流程
 ====
 
+短链接： http://is.gd/mobo_ios_new
+
 准备邮箱
 ----
 1. 登入 [Google 域管理后台](https://www.google.com/a/cpanel/chinamobo.com/)；
