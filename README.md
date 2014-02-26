@@ -2,8 +2,6 @@
 
 如果你是新来的，请先阅读 [新人入职指南](AppointmentGuide.md)。
 
-所有团队成员应 Watch 本仓库。
-
 我们没有周报，但你需要每天记录工时，参见 [TeamCola 使用](TeamCola.md) 。
 
 开发中的规范：
