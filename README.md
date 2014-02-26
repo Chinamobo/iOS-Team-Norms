@@ -12,6 +12,11 @@
 * [项目文件组织](ProjectOrganize.md)
 * [常见问题强调](CommonIssues.md)
 
+教学：
+
+* [内测应用发布](HowToPublishAlphaVersion.md)
+
+
 工具使用：
 
 * [Xcode 完全指南](https://github.com/BB9z/Xcode-Complete-Guide)
