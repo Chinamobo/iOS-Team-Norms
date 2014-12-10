@@ -8,6 +8,7 @@ Chinamobo Objective-C 编码规范
 * [命名](#naming)
   * [基本原则](#naming-basic-principle)
   * [命名空间](#namespace)
+  * [视图命名](#naming-viewcontroller)
   * [方法名](#naming-method)
   * [协议名](#naming-protocol)
   * [通知命名](#naming-notifications)
@@ -48,6 +49,55 @@ YHCommentToolbar    // OK，把类型（toolbar）置后
 ### <a name='namespace'></a>命名空间
 * 类名、protocols、C 函数、常量、结构体和枚举应带有命名空间前缀；
 * 类方法不要带前缀，结构体字段也不要带前缀
+
+
+### <a name='naming-viewcontroller'></a>视图命名
+
+为了举例，我们假定有 `User`、`Tag`、`Category` 这几种 model 类型。
+
+对象展示一般分列表和单个详情，其 view controller 分别使用 **Model**ListController 和 **Model**DetailController，推荐的语素顺序是：`Model名 + 限定与修饰 + ListController|DetailController`。举例说明：
+
+```
+// OK
+TagUserUsedListController
+TagInCategoryListController
+CategoryDetailController
+
+// 不推荐，列表统一使用 ListController，不指明是 table view 还是 collection view
+UserFollowerTableViewController
+
+// OK
+UserFollowerListController
+
+// 不推荐
+UserLikedTagListController
+
+// OK，把显示的对象放在第一位
+TagUserLikedListController
+
+// 糟糕，如果是 view controller，必须以 Controller 或 Displayer 结尾
+TagListView
+```
+
+经常为了便于多个界面复用，我们会把 model 的显示统一在一个 view controller 中，在其他界面嵌入这个 view controller。我们把这类专门管理显示的 view controller 叫做 `displayer`。如：
+
+```
+UserListDisplayer
+TagListDisplayer
+```
+
+UIView 级别的组件不要以 Controller 或 Displayer 结尾，如果起到管理作用可以使用 control 结尾。
+
+
+**动机**
+> 把 model 名放在首位（如 TagUserLikedListController 而不是 UserLikedTagListController）的主要考量是便于搜索。因为 Xcode 不支持乱序搜索，关键词只能从前往后才会有结果。
+>
+> 如果限定词在前，因为不同人理解差异，自己也会遗忘，这个限定词经常是输入不能的，只能搜 TagList 再从列表中查找，等于第一位的查找语素就废掉了。当 model 类型在第一位时，基本上熟悉这个项目的人都清楚要查找的视图显示的是什么类型，第一位正确了，后面添加/修改限定就很方便了。
+> 
+> 另一个便利的场景是参考之前界面实现另一个界面时，查找的大都是相同类型的界面，如实现 UserFollowerListController 参考 UserFollowingListController；而相同限定的场景比较少见，像 UserLikedTagListController 参考 UserLikedCategoryListController 的可能性就较少。
+>
+> PS: 如果你不用 Xcode 的 Open Quickly（默认快捷键 Command+Shift+O），强烈建议你改一下习惯
+>
 
 
 ### <a name='naming-method'></a>方法名
