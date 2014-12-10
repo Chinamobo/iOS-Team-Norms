@@ -258,6 +258,9 @@ if (a < b) {
 ```C
 // OK
 (someValue > 100)? YES : NO
+
+// OK
+(items)?: @[]
 ```
 
 二元算数运算符两侧是否加空格不确定，根据情况自己定。一元运算符与操作数之前没有空格。
@@ -275,7 +278,7 @@ if (a < b) {
    空格↑  ↑空格，花括号不要另起一行
       }
       else {
- 要换行↑ ↑空格，花括号不要另起一行
+要换行↑ ↑空格，花括号不要另起一行
       }    
   }
 ```
@@ -415,8 +418,12 @@ ushort APIFetchPageSizeDefault = 10;
 <a name='reference'></a>参考
 ------
 * [Coding Guidelines for Cocoa](http://developer.apple.com/library/ios/#documentation/Cocoa/Conceptual/CodingGuidelines/CodingGuidelines.html)
+* https://github.com/raywenderlich/swift-style-guide
+* https://github.com/github/swift-style-guide
 * https://github.com/github/objective-c-conventions
 * https://github.com/jverkoey/iOS-Best-Practices
+* https://github.com/troyharris/Complete-iOS-StyleGuide
+* https://github.com/objc-zen/objc-zen-book
 * [你们是如何为 View Controller 的变量命名的呢？ - V2EX](//www.v2ex.com/t/25732)
 * [代码大全(第2版) - 亚马逊](http://www.amazon.cn/dp/B0061XKRXA)
 
