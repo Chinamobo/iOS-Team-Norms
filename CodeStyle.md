@@ -173,6 +173,7 @@ bool_switchState, floatBoxHeight
 
 // 可选 常用的类，协商好之后可以团队内使用简写的前缀以缩短代码，这种商定不应被大规模采用
 strName, strPsaaword, btnName, btnPassword
+```
 
 推荐的前缀：
 
